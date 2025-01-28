@@ -124,21 +124,21 @@ export default function SignUpScreen({ navigation }: { navigation: any }, width:
 
     {/* AXIOS TEST API */}
 
-    const handleRegistration = async () => {
+    const handleRegistration = async () => { 
         if (usernameError || emailError || passwordError || repeatPasswordError) {
             Alert.alert('Error', 'Please fix the errors before continuing.');
             return;
         } else if (!username || !email || !password || !repeatPassword) {
-            Alert.alert('Error', 'All fields must be filled.');
+            Alert.alert('Error', 'All fields must be filled adi.');
             return;
         }
 
         try {
-            const response = await axios.post('http://localhost:3000/users', {
-                username: 'testUser',
-    email: 'test@example.com',
-    password: 'Sdsds123456',
-    dateOfBirth: '2000-01-01',
+            const response = await axios.post('http://vroom.buhprogsoft.com.ua/users', {
+                username,
+    email,
+    password,
+    dateOfBirth: selectedDate,
             });
 
             if (response.status === 201) {
