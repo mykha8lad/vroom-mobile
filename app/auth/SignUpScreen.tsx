@@ -58,15 +58,15 @@ export default function SignUpScreen({ navigation }: { navigation: any }, width:
         setUsername(text);
     };
 
-    const validateEmail = (text: string) => {
+    ail(text);
+    };const validateEmail = (text: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(text)) {
             setEmailError('Please enter a valid email');
         } else {
             setEmailError('');
         }
-        setEmail(text);
-    };
+        setEm
 
     const validatePassword = (text: string) => {
         const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*)[A-Za-z\d_]{8,12}$/;
@@ -136,9 +136,9 @@ export default function SignUpScreen({ navigation }: { navigation: any }, width:
         try {
             const response = await axios.post('http://vroom.buhprogsoft.com.ua/users', {
                 username,
-    email,
-    password,
-    dateOfBirth: selectedDate,
+                email,
+                password,
+                dateOfBirth: selectedDate,
             });
 
             if (response.status === 201) {
