@@ -5,14 +5,13 @@ import {
 
 const { width, height } = Dimensions.get('window');
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#FFF',    
     },
     headerContainer: {
-        marginTop: 12,
-        marginBottom: 4,
+        marginTop: 12,        
         flexDirection: 'column',
         rowGap: 12,
     },
@@ -68,4 +67,19 @@ export const styles = StyleSheet.create({
     itemTitle: {
         color: '#000',
     },
+    tabBar: { 
+        backgroundColor: '#fff',
+        borderTopWidth: 1,
+        borderTopColor: '#ddd',
+        height: 45,
+        paddingTop: 2,
+
+    },
+    tabIcon: { 
+        width: 24,
+        height: 24,
+        resizeMode: 'contain',
+    },
 })
+
+export default styles;

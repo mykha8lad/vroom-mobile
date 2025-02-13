@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { CommonActions } from "@react-navigation/native";
+import { StackActions } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -47,8 +49,8 @@ export default function EmailConfirmationScreen({ navigation }: { navigation: an
   // Добавить логику проверки токена верификации, после чего пользователь может войти на главную страницу
   const handleSubmit = () => {
     if (isFormValid) {
-      navigation.navigate('Main');
-    }
+        navigation.dispatch(StackActions.replace("LogIn"));
+    }   
   };
 
   return (

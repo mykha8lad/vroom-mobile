@@ -1,4 +1,8 @@
-import React from 'react';
+// web 458933853345-vihu4k2b0e874656lqf51ujh2f4daqs3.apps.googleusercontent.com
+// ios 458933853345-8fhcnspbavff0idg1i1t09bpe1n8gbeb.apps.googleusercontent.com
+// android 458933853345-fpi0273p78fe5rc75p6s6vreul3g9htt.apps.googleusercontent.com
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
   View,
   Text,
@@ -10,10 +14,55 @@ import {
   SafeAreaView,
   Platform,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Google from 'expo-auth-session/providers/google';
  
 const { width, height } = Dimensions.get('window');
 
+interface User {
+    id: number;
+    name: string;
+    email: string;    
+}
+
+const API_URL = "http://vroom.buhprogsoft.com.ua";
+
 export default function WelcomeScreen({ navigation }: { navigation: any }) {
+    const [userInfo, setUserInfo] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId: "458933853345-fpi0273p78fe5rc75p6s6vreul3g9htt.apps.googleusercontent.com",
+    iosClientId: "458933853345-8fhcnspbavff0idg1i1t09bpe1n8gbeb.apps.googleusercontent.com",
+    webClientId: "458933853345-vihu4k2b0e874656lqf51ujh2f4daqs3.apps.googleusercontent.com", // Если нужно
+    scopes: ["profile", "email"],
+    responseType: "id_token",
+  });
+
+    useEffect(() => {
+        if (response?.type === "success") {
+          handleSignInWithGoogle(response.authentication?.idToken);
+        }
+      }, [response]);
+
+    const handleSignInWithGoogle = async (idToken: string | undefined) => {
+        if (!idToken) return;
+        setLoading(true);
+        try {
+          const res = await axios.post(`${API_URL}/auth_google`, { token: idToken });
+          const user = res.data;
+    
+          // Сохраняем данные пользователя
+          await AsyncStorage.setItem("@user", JSON.stringify(user));
+          setUserInfo(user);
+        } catch (error) {
+          console.error("Ошибка авторизации:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+    
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor='#0EA2DE' barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'} />
@@ -51,7 +100,7 @@ export default function WelcomeScreen({ navigation }: { navigation: any }) {
             flexDirection: 'column',
             rowGap: 10
           }}>
-          <TouchableOpacity style={[styles.button, { borderColor: '#000', borderWidth: 1 }]}>
+          <TouchableOpacity style={[styles.button, { borderColor: '#000', borderWidth: 1 }]} onPress={() => promptAsync()}>
             <View style={styles.iconContainer}>
               <Image style={styles.icon} source={require('@/assets/images/auth-images/Google.png')} />
             </View>

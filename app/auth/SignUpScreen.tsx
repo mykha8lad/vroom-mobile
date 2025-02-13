@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { CommonActions } from '@react-navigation/native';
+import UserService from '@/app/api/api'
 
 import axios from 'axios';
 
@@ -58,15 +59,15 @@ export default function SignUpScreen({ navigation }: { navigation: any }, width:
         setUsername(text);
     };
 
-    ail(text);
-    };const validateEmail = (text: string) => {
+    const validateEmail = (text: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(text)) {
             setEmailError('Please enter a valid email');
         } else {
             setEmailError('');
         }
-        setEm
+        setEmail(text);
+    };
 
     const validatePassword = (text: string) => {
         const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*)[A-Za-z\d_]{8,12}$/;
@@ -107,20 +108,7 @@ export default function SignUpScreen({ navigation }: { navigation: any }, width:
         });
         setSelectedDate(formattedDate);
         hideDatePicker();
-    };
-
-    // Функция обработчик отправки формы регистрации, добавить логику отправки данных на сервер
-    // const handleSubmit = () => {
-    //     if (usernameError || emailError || passwordError || repeatPasswordError) {
-    //         Alert.alert('Error', 'Please fix the errors before continuing.');
-    //         return;
-    //     } else if (!username || !email || !password || !repeatPassword) {
-    //         Alert.alert('Error', 'All fields must be filled.');
-    //         return;
-    //     } else {
-    //         navigation.navigate('Confirmation');
-    //     }
-    // };  
+    };    
 
     {/* AXIOS TEST API */}
 
@@ -133,20 +121,44 @@ export default function SignUpScreen({ navigation }: { navigation: any }, width:
             return;
         }
 
+        // try {
+        //     const response = await axios.post('http://vroom.buhprogsoft.com.ua/users', {
+        //         username,
+        //         email,
+        //         password,
+        //         dateOfBirth: selectedDate,
+        //     });
+
+        //     if (response.status === 201) {
+        //         Alert.alert('Success', 'You have been registered successfully!');
+        //         navigation.navigate('Confirmation');
+        //     }
+        // } catch (error) {
+        //     console.error(error);           
+        // }
+        
         try {
-            const response = await axios.post('http://vroom.buhprogsoft.com.ua/users', {
+            // Проверяем, есть ли уже такой email
+            const { data: existingUsers } = await axios.get(`http://vroom.buhprogsoft.com.ua/users?email=${email}`);
+    
+            if (existingUsers.length > 0) {
+                Alert.alert("Ошибка", "Email уже зарегистрирован.");
+                return;
+            }
+    
+            // Регистрируем пользователя
+            await axios.post('http://vroom.buhprogsoft.com.ua/users', {
                 username,
                 email,
                 password,
-                dateOfBirth: selectedDate,
+                selectedDate
             });
-
-            if (response.status === 201) {
-                Alert.alert('Success', 'You have been registered successfully!');
-                navigation.navigate('Confirmation');
-            }
+    
+            Alert.alert("Успех", "Пользователь зарегистрирован.");
+            navigation.navigate('Confirmation');
+    
         } catch (error) {
-            console.error(error);           
+            console.log(error);
         }
     }
 

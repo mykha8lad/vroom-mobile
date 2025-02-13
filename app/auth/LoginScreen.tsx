@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { CommonActions } from '@react-navigation/native';
+import UserService from '@/app/api/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StackActions } from "@react-navigation/native";
+import axios from 'axios';
+
 import {
   View,
   Text,
@@ -16,7 +21,7 @@ import {
 
 const { width, height } = Dimensions.get('window');
 
-export default function LoginScreen({ navigation }: { navigation: any }) {  
+export default function LoginScreen({ navigation }: { navigation: any }, width: any) {      
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -57,13 +62,45 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
     };    
 
     // Функция обработчик отправки формы авторизации
-    const handleSubmit = () => {
-        if(email === 'test@test.com' && password === 'Test1234')
-        {
-            navigation.navigate('Main');
-        } else {
-            Alert.alert('Error', 'Wrong password.');
-            return;
+    const handleLogin = async () => {
+        // try {
+        //     const response = await axios.post('vroom.buhprogsoft.com.ua/login', { email, password });
+    
+        //     // Сохраняем токен в AsyncStorage
+        //     const { token } = response.data;
+        //     await AsyncStorage.setItem("token", token);
+    
+        //     // Переход на главную страницу
+        //     navigation.navigate("Main");
+    
+        // } catch (error) {
+        //     Alert.alert("Ошибка", "Неверный email или пароль");
+        // }
+        try {
+            // Получаем пользователя по email
+            const { data: users } = await axios.get(`http://vroom.buhprogsoft.com.ua/users?email=${email}`);
+    
+            if (users.length === 0) {
+                Alert.alert("Ошибка", "Пользователь не найден.");
+                return;
+            }
+    
+            const user = users[0];
+    
+            // Проверяем пароль
+            if (user.password !== password) {
+                Alert.alert("Ошибка", "Неверный пароль.");
+                return;
+            }
+    
+            // Сохраняем данные в AsyncStorage
+            await AsyncStorage.setItem("user", JSON.stringify(user));
+    
+            // Переход на главную страницу
+            navigation.navigate("Main");
+    
+        } catch (error) {
+            console.log(error);
         }
     }
   
@@ -139,7 +176,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
                     <TouchableOpacity
                     disabled={!isFormValid}
                     style={[styles.button, { backgroundColor: isFormValid ? '#0EA2DE' : '#E6E6E6' }]}
-                    onPress={handleSubmit}>
+                    onPress={handleLogin}>
                         <Text style={[styles.buttonText, { color: isFormValid ? '#FFF' : '#808080' }]}>
                             Continue
                         </Text>

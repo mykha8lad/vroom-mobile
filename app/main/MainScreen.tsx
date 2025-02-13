@@ -1,133 +1,109 @@
-import React from 'react';
-import { styles } from './stylesMain';
+import React, { useState, useRef, useEffect } from 'react';
+import styles from './stylesMain';
+
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+import RecommendedScreen from '../main/Recommended/RecommendedScreen';
+import BriefsScreen from '../main/Briefs/BriefsScreen';
+import FollowedScreen from '../main/Followed/FollowedScreen';
+import SearchScreen from '../main/Search/SearchScreen';
+import ProfileScreen from '../main/Profile/ProfileScreen';
+
+import NotificationsIcon from '@/assets/images/main-images/Notifications.svg';
+import AddVideoIcon from '@/assets/images/main-images/AddVideo.svg';
+import LogotypeIcon from '@/assets/images/main-images/Logotype.svg';
+
+import RecommendedActiveIcon from '@/assets/images/main-images/main-navigation-icons/active/RecommendedActive.svg';
+import BriefsActiveIcon from '@/assets/images/main-images/main-navigation-icons/active/BriefsActive.svg';
+import SearchActiveIcon from '@/assets/images/main-images/main-navigation-icons/active/SearchActive.svg';
+import FollowedActiveIcon from '@/assets/images/main-images/main-navigation-icons/active/FollowedActive.svg';
+
+import RecommendedNoActiveIcon from '@/assets/images/main-images/main-navigation-icons/inactive/RecommendedNoActive.svg';
+import BriefsNoActiveIcon from '@/assets/images/main-images/main-navigation-icons/inactive/BriefsNoActive.svg';
+import SearchNoActiveIcon from '@/assets/images/main-images/main-navigation-icons/inactive/SearchNoActive.svg';
+import FollowedNoActiveIcon from '@/assets/images/main-images/main-navigation-icons/inactive/FollowedNoActive.svg';
+
+import AvatarIcon from '@/assets/images/main-images/main-navigation-icons/Avatar.svg';
+
+const icons: any = {
+    Recommended: { active: RecommendedActiveIcon, inactive: RecommendedNoActiveIcon },
+    Briefs: { active: BriefsActiveIcon, inactive: BriefsNoActiveIcon },
+    Search: { active: SearchActiveIcon, inactive: SearchNoActiveIcon },
+    Followed: { active: FollowedActiveIcon, inactive: FollowedNoActiveIcon },
+    Profile: { active: AvatarIcon, inactive: AvatarIcon },
+};
+
 import {
-    View,
+    View,   
     Text,
     Image,
     TouchableOpacity,
-    StyleSheet,
-    Dimensions,  
     StatusBar,
     SafeAreaView,
     Platform,
-    FlatList,
+    Animated,
+    Pressable,
 } from 'react-native';
 
-const storyListData = [
-    {
-        id: '0',
-        title: ' ',
-    },
-    {
-        id: '1',
-        title: 'All',
-    },
-    {
-        id: '2',
-        title: 'Gaming',
-    },
-    {
-        id: '3',
-        title: 'Black Myth: Wukong',
-    },
-    {
-        id: '4',
-        title: 'Live',
-    },
-    {
-        id: '5',
-        title: 'Video Game walkthroughs',
-    },
-];
+const Header = () => {
+    return(
+        <View style={styles.headerContainer}>
+            <View style={styles.header}>
+                <LogotypeIcon/>
+                    
+                <View style={styles.toolsList}>
+                    <TouchableOpacity>
+                        <AddVideoIcon/>
+                    </TouchableOpacity>
 
+                    <TouchableOpacity>                        
+                        <NotificationsIcon/>
+                    </TouchableOpacity>
+                </View>
+            </View>        
+        </View>
+    )
+}
 
+const Tab = createBottomTabNavigator();
 
-type ItemProps = {title: string};
+// Динамический компонент для анимации иконок
+const CustomTabIcon = ({ focused, IconActive, IconInactive }: any) => { 
+    return (
+        <View style={ styles.tabIcon }>
+            {focused ? <IconActive width={24} height={24} /> : <IconInactive width={24} height={24} />}
+        </View>
+    );
+};
 
-const Item = ({title}: ItemProps) => (
-    <View style={styles.item}>
-      <Text>{title}</Text>
-    </View>
-);
-
-type ItemProps2 = {title: string};
-
-const Item2 = ({title}: ItemProps) => (
-    <View style={styles.item2}>
-      <Text>{title}</Text>
-    </View>
-);
-
-export default function MainScreen() {
+export default function MainScreen() {    
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor='#0EA2DE' barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'} />
 
-            <View style={styles.headerContainer}>
-                <View style={styles.header}>
-                    <Image style={{height: 24, width: 100}} source={require('@/assets/images/main-images/logotype.png')}/>
+            <View style={styles.container}>
 
-                    <View style={styles.toolsList}>
-                        <TouchableOpacity>
-                            <Image style={styles.toolsIcons} source={require('@/assets/images/main-images/add_video.png')}/>
-                        </TouchableOpacity>
+                <Header />
 
-                        <TouchableOpacity>
-                            <Image style={styles.toolsIcons} source={require('@/assets/images/main-images/notifications.png')}/>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-
-                <View style={styles.offersList}>
-                    <FlatList
-                        data={storyListData}
-                        renderItem={({item}) => <Item title={item.title} />}
-                        keyExtractor={item => item.id}
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                    />
-                </View>
-            </View>
-
-            <View>
-                <View style={styles.offersList}>
-                    <FlatList
-                        data={storyListData}
-                        renderItem={({item}) => <Item2 title={item.title} />}
-                        keyExtractor={item => item.id}                        
-                        showsHorizontalScrollIndicator={false}
-                    />
-                </View>
-            </View>
-
-            <View style={styles.navigationContainer}>
-                <View style={styles.navigationRow}>
-                    <View>
-                        <TouchableOpacity>
-                            <Image style={styles.navigationIcons} source={require('@/assets/images/main-images/recommended.png')}/>
-                        </TouchableOpacity>
-                    </View>
-                    <View>
-                        <TouchableOpacity>
-                            <Image style={styles.navigationIcons} source={require('@/assets/images/main-images/briefs.png')}/>
-                        </TouchableOpacity>
-                    </View>
-                    <View>
-                        <TouchableOpacity>
-                            <Image style={styles.navigationIcons} source={require('@/assets/images/main-images/search.png')}/>
-                        </TouchableOpacity>
-                    </View>
-                    <View>
-                        <TouchableOpacity>
-                            <Image style={styles.navigationIcons} source={require('@/assets/images/main-images/followed.png')}/>
-                        </TouchableOpacity>
-                    </View>
-                    <View>
-                        <TouchableOpacity>
-                            <Image style={styles.navigationIcons} source={require('@/assets/images/main-images/avatar.png')}/>
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                <Tab.Navigator
+                    screenOptions={({ route }) => ({
+                        tabBarIcon: ({ focused }) => (
+                            <CustomTabIcon focused={focused} IconActive={icons[route.name].active} IconInactive={icons[route.name].inactive} />
+                        ),
+                        tabBarStyle: styles.tabBar,
+                        tabBarShowLabel: false,
+                        headerShown: false,
+                        animation: 'shift',
+                        
+                    })}
+                    >
+                    <Tab.Screen name="Recommended" component={RecommendedScreen}/>
+                    <Tab.Screen name="Briefs" component={BriefsScreen} />
+                    <Tab.Screen name="Search" component={SearchScreen} />
+                    <Tab.Screen name="Followed" component={FollowedScreen} />
+                    <Tab.Screen name="Profile" component={ProfileScreen} />
+                </Tab.Navigator>
+                
             </View>
 
         </SafeAreaView>
