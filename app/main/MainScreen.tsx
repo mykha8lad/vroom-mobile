@@ -34,15 +34,11 @@ const icons: any = {
 };
 
 import {
-    View,   
-    Text,
-    Image,
+    View,
     TouchableOpacity,
     StatusBar,
     SafeAreaView,
     Platform,
-    Animated,
-    Pressable,
 } from 'react-native';
 
 const Header = () => {
