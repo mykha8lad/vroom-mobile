@@ -7,7 +7,8 @@ import EmailConfirmationScreen from "./auth/EmailConfirmationScreen";
 import LoginScreen from "./auth/LoginScreen";
 
 import MainScreen from './main/MainScreen';
-import PlaylistScreen from './main/Profile/Playlists/PlaylistScreen';
+import PlaylistPreview from './main/Profile/Playlists/PlaylistPreview';
+import GeneralChannelScreen from './main/Profile/Channel/GeneralChannelScreen';
 
 // Для простоты и наглядности использования, логика навигации организована в одном файле
 
@@ -28,16 +29,18 @@ export default function Index() {
     //         <Stack.Screen name="Confirmation" component={EmailConfirmationScreen} /> */}
 
     //         {/* General page */}
-    //         <Stack.Screen name="Main" component={MainScreen} />
-    //         <Stack.Screen name="SearchScreen" component={SearchScreen} />
+    //         <Stack.Screen name="Main" component={MainScreen} />    
+    //         <Stack.Screen name="PlaylistPreview" component={PlaylistPreview} />
             
     //     </Stack.Navigator>  
     
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="MainScreen" component={MainScreen} />
-            <Stack.Screen name="PlaylistScreen" component={PlaylistScreen} />
-        </Stack.Navigator>
-    
+            
+            <Stack.Navigator screenOptions={{
+                      headerShown: false,
+                    }}>                                                
+                <Stack.Screen name="Main" component={MainScreen} />    
+                <Stack.Screen name="PlaylistPreview" component={PlaylistPreview} />
+            </Stack.Navigator>
         
     );
 }

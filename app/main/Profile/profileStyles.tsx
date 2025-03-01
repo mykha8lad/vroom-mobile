@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     profileNavContainer: {
         flexDirection: 'column',
         rowGap: 8,
-        marginTop: 16,
+        marginVertical: 16,           
     },
     avatar: {
         width: "100%",

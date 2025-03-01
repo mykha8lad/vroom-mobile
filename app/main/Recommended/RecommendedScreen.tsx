@@ -1,4 +1,4 @@
-import VideoPreview from '../VideoPreview';
+import VideoPreview from '@/app/previews/Video/VideoPreview';
 
 import {
     View,
@@ -31,7 +31,7 @@ export const videos = [
     },
     {
         id: "3",
-        titleVideo: "I Drew Every Day for 365 Days..... *it was painful*",
+        titleVideo: "MKBHD's Wallpaper App Could be Way Better - My Review & Redesign",
         channelName: "PewDiePie",
         videoPreview: require('../../../assets/images/video-images/previews/image-1.png'),
         avatar: require('../../../assets/images/video-images/avatars/Avatar.png'),
@@ -44,7 +44,7 @@ export const videos = [
 const storyListData = [
     {
         id: '0',
-        title: ' ',
+        title: '',
     },
     {
         id: '1',
@@ -66,6 +66,47 @@ const storyListData = [
         id: '5',
         title: 'Video Game walkthroughs',
     },
+    {
+        id: '6',
+        title: 'Audio commentaries',
+    },
+    {
+        id: '7',
+        title: 'History',
+    },
+    {
+        id: '8',
+        title: 'Algebra',
+    },
+    {
+        id: '9',
+        title: 'Role-Playing Games',
+    },
+    {
+        id: '10',
+        title: 'Science',
+    },
+    {
+        id: '11',
+        title: 'Comedy',
+    },
+    {
+        id: '12',
+        title: 'Pop Music',
+    },
+    {
+        id: '13',
+        title: 'Cars',
+    },
+    {
+        id: '14',
+        title: 'Nature',
+    },
+    {
+        id: '15',
+        title: 'Recently uploaded',
+    },
+    
 ];
 
 type ItemProps = {title: string};
@@ -80,6 +121,7 @@ export default function RecommendedScreen() {
     return(
         <View style={{backgroundColor: '#fff', height: '100%'}}>
             <View style={styles.offersList}>
+                
                 <FlatList
                     data={storyListData}
                     renderItem={({item}) => <Item title={item.title} />}

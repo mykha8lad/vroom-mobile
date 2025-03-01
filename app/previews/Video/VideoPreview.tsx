@@ -1,14 +1,13 @@
-import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
 import styles from './stylesVideo';
 
-const VideoPreview = ({ preview }: any) => {
-    const [paused, setPaused] = useState(true);
-    
+import MoreIcon from './icons/More.svg'
+
+const VideoPreview = ({ preview }: any) => {    
     return (
         <View style={styles.container}>
             {/* Видео */}
-            <TouchableOpacity onPress={() => setPaused(!paused)}>
+            <TouchableOpacity>
                 <Image source={preview.videoPreview} style={styles.video} resizeMode="cover" />
             </TouchableOpacity>
     
@@ -28,7 +27,7 @@ const VideoPreview = ({ preview }: any) => {
                         <Text style={styles.subTitle}>{preview.date} ago</Text>
                     </View>
                 </View>
-                <Image source={require('../../assets/images/video-images/More.png')} style={styles.more}/>
+                <MoreIcon/>
             </View>
         </View>
     );

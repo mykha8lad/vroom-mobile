@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
 
-const PlaylistScreen = ({ route, navigation }: any) => {
+const PlaylistPreview = ({ route, navigation }: any) => {
     const { videos } = route.params;
 
     return (
@@ -23,4 +23,4 @@ const PlaylistScreen = ({ route, navigation }: any) => {
     );
 };
 
-export default PlaylistScreen;
+export default PlaylistPreview;

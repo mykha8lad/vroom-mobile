@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
-import { useNavigation } from '@react-navigation/native';
 import PlaylistsIcon from './Playlists.svg';
-import PlaylistScreen from "./PlaylistScreen";
 
 export const VideoPlaylistsPreview = ({ preview, playlist, navigation }: any ) => {    
 
     return (
         <TouchableOpacity
-            onPress={() => navigation.navigate('PlaylistScreen', { videos: playlist })}
+            onPress={() => navigation.navigate('PlaylistPreview', { videos: playlist })}
             style={styles.container}
         >
             <Image source={preview.videoPreview} style={styles.video} resizeMode="cover" />

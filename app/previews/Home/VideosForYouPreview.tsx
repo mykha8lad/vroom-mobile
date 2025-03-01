@@ -1,40 +1,40 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
 
-export const VideoHistoryPreview = ({ preview }: any) => {
-    return (
-        <View style={styles.container}>
-            {/* Видео */}
-            <TouchableOpacity>
-                <Image source={preview.videoPreview} style={styles.video} resizeMode="cover" />
-            </TouchableOpacity>
-    
-            {/* Информация о видео */}
-            <View style={styles.infoContainer}>                
-                <View style={styles.timeView}>
-                    <Text style={styles.timeText}>{preview.time}</Text>
-                </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.title}>{preview.titleVideo}</Text>                    
-                    <Text style={styles.subTitle}>{preview.channelName}</Text>                    
-                </View>                
-            </View>
-        </View>
-    );
-};
-
 const { width, height } = Dimensions.get('window');
+
+const VideosForYouPreview = ({ preview }: any) => {
+    return (
+            <View style={styles.container}>
+                {/* Видео */}
+                <TouchableOpacity>
+                    <Image source={preview.videoPreview} style={styles.video} resizeMode="cover" />
+                </TouchableOpacity>
+        
+                {/* Информация о видео */}
+                <View style={styles.infoContainer}>                
+                    <View style={styles.timeView}>
+                        <Text style={styles.timeText}>{preview.time}</Text>
+                    </View>
+                    <View style={styles.textContainer}>
+                        <Text style={styles.title}>{preview.titleVideo}</Text>                    
+                        <Text style={styles.subTitle}>{preview.channelName}</Text>                    
+                    </View>                
+                </View>
+            </View>
+        );
+};
 
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
         rowGap: 5,
-        width: 160,
-        marginStart: 4,
+        width: 280,
+        marginEnd: 4,
       },
       video: {
-        width: 160,
-        height: 90, 
+        width: 280,
+        height: 158, 
         borderRadius: 10,       
       },
       infoContainer: {
@@ -82,3 +82,5 @@ const styles = StyleSheet.create({
         color: '#fff',
       },      
 })
+
+export default VideosForYouPreview;

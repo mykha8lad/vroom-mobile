@@ -1,25 +1,27 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
+import PlaylistsIcon from './images/Playlists.svg';
 
-export const VideoHistoryPreview = ({ preview }: any) => {
+export const AuthorPlaylistsPreview = ({ preview, playlist, navigation }: any ) => {    
+
     return (
-        <View style={styles.container}>
-            {/* Видео */}
-            <TouchableOpacity>
-                <Image source={preview.videoPreview} style={styles.video} resizeMode="cover" />
-            </TouchableOpacity>
-    
-            {/* Информация о видео */}
-            <View style={styles.infoContainer}>                
-                <View style={styles.timeView}>
-                    <Text style={styles.timeText}>{preview.time}</Text>
+        <TouchableOpacity
+            onPress={() => navigation.navigate('PlaylistPreview', { videos: playlist })}
+            style={styles.container}
+        >
+            <Image source={preview.videoPreview} style={styles.video} resizeMode="cover" />
+
+            <View style={styles.infoContainer}>
+                <View style={styles.infoRow}>
+                    <PlaylistsIcon width={15} height={15}/>
+                    <Text style={styles.timeText}>{playlist.length} videos</Text>
                 </View>
                 <View style={styles.textContainer}>
-                    <Text style={styles.title}>{preview.titleVideo}</Text>                    
-                    <Text style={styles.subTitle}>{preview.channelName}</Text>                    
-                </View>                
+                    <Text style={styles.title}>{preview.titleVideo}</Text>
+                    <Text style={styles.subTitle}>{preview.channelName}</Text>
+                </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 
@@ -27,10 +29,10 @@ const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'column',
-        rowGap: 5,
-        width: 160,
-        marginStart: 4,
+        flexDirection: 'row',
+        columnGap: 5,
+        width: 160,        
+        marginBottom: 10,
       },
       video: {
         width: 160,
@@ -38,7 +40,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,       
       },
       infoContainer: {
-        flexDirection: "row",         
+        flexDirection: "row",        
       },
       thumbnail: {
         width: 30,
@@ -68,7 +70,7 @@ const styles = StyleSheet.create({
       more: {
         marginRight: 10,
       },
-      timeView: {
+      infoRow: {
         backgroundColor: '#000',
         paddingHorizontal: 3,
         paddingVertical: 1.5,
@@ -77,6 +79,9 @@ const styles = StyleSheet.create({
         right: 5,
         bottom: 62,
         borderRadius: 5,
+        flexDirection: 'row',
+        alignItems: 'center',
+        columnGap: 3,   
       },
       timeText: {
         color: '#fff',

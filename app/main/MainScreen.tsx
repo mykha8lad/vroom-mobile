@@ -1,13 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import styles from './stylesMain';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import GeneralChannelScreen from './Profile/Channel/GeneralChannelScreen';
 
 import RecommendedScreen from '../main/Recommended/RecommendedScreen';
 import BriefsScreen from '../main/Briefs/BriefsScreen';
 import FollowedScreen from '../main/Followed/FollowedScreen';
 import SearchScreen from '../main/Search/SearchScreen';
 import ProfileScreen from '../main/Profile/ProfileScreen';
+import ProfileStack from './Profile/ProfileNavigationStack';
 
 import NotificationsIcon from '@/assets/images/main-images/Notifications.svg';
 import AddVideoIcon from '@/assets/images/main-images/AddVideo.svg';
@@ -62,6 +66,7 @@ const Header = () => {
 }
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 // Динамический компонент для анимации иконок
 const CustomTabIcon = ({ focused, IconActive, IconInactive }: any) => { 
@@ -72,12 +77,10 @@ const CustomTabIcon = ({ focused, IconActive, IconInactive }: any) => {
     );
 };
 
-export default function MainScreen() {    
-    return (
+const TabNavigetion = () => {
+    return(
         <SafeAreaView style={styles.container}>
-            <StatusBar backgroundColor='#0EA2DE' barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'} />
-
-            <View style={styles.container}>
+            <StatusBar translucent backgroundColor="#000" barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'} />            
 
                 <Header />
 
@@ -97,11 +100,22 @@ export default function MainScreen() {
                     <Tab.Screen name="Briefs" component={BriefsScreen} />
                     <Tab.Screen name="Search" component={SearchScreen} />
                     <Tab.Screen name="Followed" component={FollowedScreen} />
-                    <Tab.Screen name="Profile" component={ProfileScreen} />
-                </Tab.Navigator>
-                
-            </View>
+                    <Tab.Screen name="Profile" component={ProfileStack} />
+                </Tab.Navigator>                        
 
         </SafeAreaView>
+    )
+}
+
+export default function MainScreen() {    
+    return (
+        <Stack.Navigator>
+      {/* Главный экран с табами */}
+      <Stack.Screen 
+        name="MainTabs" 
+        component={TabNavigetion} 
+        options={{ headerShown: false }} 
+      />
+    </Stack.Navigator>
     )
 }

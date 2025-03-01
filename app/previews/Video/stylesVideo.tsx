@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
         rowGap: 5,
+        marginBottom: 10,
       },
       video: {
         width: '100%',
@@ -39,7 +40,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
       },
       sep: {
-        fontSize: 26,
         color: '#404040',
       },
       more: {

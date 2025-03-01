@@ -1,44 +1,45 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
 
-export const VideoHistoryPreview = ({ preview }: any) => {
+const VideoPreview = ({ preview }: any) => {
+    const [paused, setPaused] = useState(true);
+    
     return (
         <View style={styles.container}>
             {/* Видео */}
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => setPaused(!paused)}>
                 <Image source={preview.videoPreview} style={styles.video} resizeMode="cover" />
             </TouchableOpacity>
     
             {/* Информация о видео */}
-            <View style={styles.infoContainer}>                
+            <View style={styles.infoContainer}>
                 <View style={styles.timeView}>
                     <Text style={styles.timeText}>{preview.time}</Text>
                 </View>
                 <View style={styles.textContainer}>
-                    <Text style={styles.title}>{preview.titleVideo}</Text>                    
-                    <Text style={styles.subTitle}>{preview.channelName}</Text>                    
+                    <Text style={styles.title}>{preview.titleVideo}</Text>
+                    <View style={styles.subTitleRow}>
+                        <Text style={styles.subTitle}>{preview.views} views</Text>
+                        <Text style={styles.sep}>·</Text>
+                        <Text style={styles.subTitle}>{preview.date} ago</Text>
+                    </View>
                 </View>                
             </View>
         </View>
     );
 };
 
-const { width, height } = Dimensions.get('window');
-
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
         rowGap: 5,
-        width: 160,
-        marginStart: 4,
       },
       video: {
-        width: 160,
-        height: 90, 
-        borderRadius: 10,       
+        width: '100%',
+        height: 200,        
       },
       infoContainer: {
-        flexDirection: "row",         
+        flexDirection: "row",        
       },
       thumbnail: {
         width: 30,
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
         marginLeft: 16,        
       },
       textContainer: {
-        marginLeft: 4,        
+        marginLeft: 16,
       },
       title: {        
         fontSize: 14,
@@ -62,7 +63,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
       },
       sep: {
-        fontSize: 26,
         color: '#404040',
       },
       more: {
@@ -74,11 +74,13 @@ const styles = StyleSheet.create({
         paddingVertical: 1.5,
         opacity: .75,
         position: 'absolute',
-        right: 5,
-        bottom: 62,
+        right: 10,
+        bottom: 70,
         borderRadius: 5,
       },
       timeText: {
         color: '#fff',
       },      
 })
+
+export default VideoPreview;

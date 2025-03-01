@@ -5,12 +5,15 @@ import { VideoHistoryPreview } from './History/HistoryRow';
 import { VideoPlaylistsPreview } from './Playlists/PlaylistsRow';
 import { videos } from '../Recommended/RecommendedScreen';
 import { videosPlaylists } from './Playlists/Videos';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
     View,
     Text,
     Image,
     TouchableOpacity,
     FlatList,
+    ScrollView,
 } from 'react-native';
 
 import UserIcon from '@/assets/images/main-images/profile-images/nav-images/User.svg';
@@ -19,10 +22,27 @@ import PlaylistsIcon from '@/assets/images/main-images/profile-images/nav-images
 import SettingsIcon from '@/assets/images/main-images/profile-images/nav-images/Settings.svg';
 import AngleIcon from '@/assets/images/main-images/profile-images/nav-images/Angle.svg';
 
-const ProfileNavItem = ({ Icon, title }: { Icon: React.FC; title: string }) => {
+export type RootStackParamList = {
+    GeneralChannel: undefined;
+    Settings: undefined;
+    Playlists: undefined;
+    History: undefined;
+};
+
+type ProfileNavProp = NativeStackNavigationProp<RootStackParamList>;
+
+interface ProfileNavItemProps {
+    Icon: React.FC;
+    title: string;
+    screenName: keyof RootStackParamList;  // Ограничиваем экраны только теми, которые есть в RootStackParamList
+}
+
+const ProfileNavItem: React.FC<ProfileNavItemProps> = ({ Icon, title, screenName }) => {
+    const navigation = useNavigation<ProfileNavProp>();
+
     return (
         <View>
-            <TouchableOpacity style={styles.profileNavButton}>
+            <TouchableOpacity style={styles.profileNavButton} onPress={() => navigation.navigate(screenName)}>
                 <View style={styles.profileNavButtonRow}>
                     <Icon />
                     <Text style={styles.profileNavButtonText}>{title}</Text>
@@ -56,57 +76,58 @@ export default function ProfileScreen({ navigation }: any) {
     };
 
     return(
-        <View style={{backgroundColor: '#fff', height: '100%'}}>
-            <View style={styles.headerContainer}>
+        <ScrollView style={{backgroundColor: '#fff', height: '100%'}}>
+            
+                <View style={styles.headerContainer}>
 
-                <TouchableOpacity style={styles.avatarContainer} onPress={pickImage}>
-                    {image ? (
-                        <Image source={{ uri: image }} style={styles.avatar} />
-                    ) : (
-                        <View style={styles.placeholder}>
-                            <Image source={require('../../../assets/images/main-images/profile-images/Avatar.png')} style={styles.editIcon} />
-                        </View>
-                    )}
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.avatarContainer} onPress={pickImage}>
+                        {image ? (
+                            <Image source={{ uri: image }} style={styles.avatar} />
+                        ) : (
+                            <View style={styles.placeholder}>
+                                <Image source={require('../../../assets/images/main-images/profile-images/Avatar.png')} style={styles.editIcon} />
+                            </View>
+                        )}
+                    </TouchableOpacity>
 
-                <View style={styles.userInfoContainer}>
-                    <Text style={styles.userNameText}>Life Hater</Text>
+                    <View style={styles.userInfoContainer}>
+                        <Text style={styles.userNameText}>Life Hater</Text>
 
-                    <Text style={styles.nickNameText}>@LiFeHaTeR99</Text>
+                        <Text style={styles.nickNameText}>@LiFeHaTeR99</Text>
+                    </View>
+
                 </View>
+                <View style={styles.profileNavContainer}>
+                    
+                    <ProfileNavItem Icon={UserIcon} title="Your channel" screenName='GeneralChannel'/>
+                    <ProfileNavItem Icon={HistoryIcon} title="History" screenName='History'/>
 
-            </View>
-            <View style={styles.profileNavContainer}>
-                
-                <ProfileNavItem Icon={UserIcon} title="Your channel" />
-                <ProfileNavItem Icon={HistoryIcon} title="History" />
+                    <View style={styles.videosRow}>
+                        <FlatList
+                            data={videos}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item }) => <VideoHistoryPreview preview={item} />}
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                        />
+                    </View>
 
-                <View style={styles.videosRow}>
-                    <FlatList
-                        data={videos}
-                        keyExtractor={(item) => item.id}
-                        renderItem={({ item }) => <VideoHistoryPreview preview={item} />}
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                    />
-                </View>
+                    <ProfileNavItem Icon={PlaylistsIcon} title="Playlists" screenName='Playlists'/>
 
-                <ProfileNavItem Icon={PlaylistsIcon} title="Playlists" />
+                    <View style={styles.videosRow}>
+                        <FlatList
+                            data={videosPlaylists}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item }) => ( <VideoPlaylistsPreview preview={item[item.length-1]} playlist={item}  navigation={navigation}/> )}
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                        />
+                    </View>
 
-                <View style={styles.videosRow}>
-                    <FlatList
-                        data={videosPlaylists}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item }) => ( <VideoPlaylistsPreview preview={item[item.length-1]} playlist={item}  navigation={navigation}/> )}
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                    />
-                </View>
+                    <ProfileNavItem Icon={SettingsIcon} title="Settings" screenName='Settings'/>
 
-                <ProfileNavItem Icon={SettingsIcon} title="Settings" />
-
-            </View>
-        </View>
+                </View>            
+        </ScrollView>
     );
 }
 
