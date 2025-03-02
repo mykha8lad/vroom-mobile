@@ -4,13 +4,13 @@ import styles from './stylesMain';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import GeneralChannelScreen from './Profile/Channel/GeneralChannelScreen';
+import MyChannelPage from '@/pages/my-channel/MyChannelPage';
 
-import RecommendedScreen from '../main/Recommended/RecommendedScreen';
-import BriefsScreen from '../main/Briefs/BriefsScreen';
-import FollowedScreen from '../main/Followed/FollowedScreen';
-import SearchScreen from '../main/Search/SearchScreen';
-import ProfileScreen from '../main/Profile/ProfileScreen';
+import RecommendedPage from '@/pages/recommended/ReccomendedPage';
+import BriefsPage from '@/pages/briefs/BriefsPage';
+import FollowedPage from '@/pages/followed/FollowedPage';
+import SearchPage from '@/pages/search/SearchPage';
+import ProfilePage from '@/pages/profile/ProfilePage';
 import ProfileStack from './Profile/ProfileNavigationStack';
 
 import NotificationsIcon from '@/assets/images/main-images/Notifications.svg';
@@ -96,10 +96,10 @@ const TabNavigetion = () => {
                         
                     })}
                     >
-                    <Tab.Screen name="Recommended" component={RecommendedScreen}/>
-                    <Tab.Screen name="Briefs" component={BriefsScreen} />
-                    <Tab.Screen name="Search" component={SearchScreen} />
-                    <Tab.Screen name="Followed" component={FollowedScreen} />
+                    <Tab.Screen name="Recommended" component={RecommendedPage} />
+                    <Tab.Screen name="Briefs" component={BriefsPage} />
+                    <Tab.Screen name="Search" component={SearchPage} />
+                    <Tab.Screen name="Followed" component={FollowedPage} />
                     <Tab.Screen name="Profile" component={ProfileStack} />
                 </Tab.Navigator>                        
 

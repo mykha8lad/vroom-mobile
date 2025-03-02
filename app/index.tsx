@@ -7,7 +7,7 @@ import EmailConfirmationScreen from "./auth/EmailConfirmationScreen";
 import LoginScreen from "./auth/LoginScreen";
 
 import MainScreen from './main/MainScreen';
-import PlaylistPreview from './main/Profile/Playlists/PlaylistPreview';
+import PlaylistVideosColumn from '@/widgets/Playlists/PlaylistVideosColumn/PlaylistVideosColumn';
 import GeneralChannelScreen from './main/Profile/Channel/GeneralChannelScreen';
 
 // Для простоты и наглядности использования, логика навигации организована в одном файле
@@ -39,7 +39,7 @@ export default function Index() {
                       headerShown: false,
                     }}>                                                
                 <Stack.Screen name="Main" component={MainScreen} />    
-                <Stack.Screen name="PlaylistPreview" component={PlaylistPreview} />
+                <Stack.Screen name="PlaylistPreview" component={PlaylistVideosColumn} />
             </Stack.Navigator>
         
     );
