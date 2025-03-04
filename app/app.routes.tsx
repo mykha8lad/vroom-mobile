@@ -6,12 +6,12 @@ import MainPage from '@/pages/main/MainPage';
 const Stack = createStackNavigator();
 
 export default function AppNavigator() {
-    return (
+    return (        
         <Stack.Navigator
             initialRouteName="Main"
             screenOptions={{ headerShown: false }}
         >
             <Stack.Screen name="Main" component={MainPage} />
-        </Stack.Navigator>
+        </Stack.Navigator>        
     );
 }

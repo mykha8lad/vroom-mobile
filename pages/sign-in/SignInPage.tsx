@@ -4,7 +4,6 @@ import { CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackActions } from "@react-navigation/native";
 import axios from 'axios';
-import { useAuth } from "@/shared/auth.context";
 
 import {
   View,
@@ -18,9 +17,7 @@ import {
   Alert,
 } from 'react-native';
 
-export default function SignInPage({ navigation }: { navigation: any }, width: any) {  
-    const { login } = useAuth();
-
+export default function SignInPage({ navigation }: { navigation: any }, width: any) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -61,15 +58,9 @@ export default function SignInPage({ navigation }: { navigation: any }, width: a
     };    
 
     // Функция обработчик отправки формы авторизации
-    const handleLogin = async () => {    
-            login();
-            setTimeout(() => {
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'Main' }],
-                });
-            }, 500);
-    }
+    const handleLogin = async () => {
+        Alert.alert('succes!');
+    };
   
   return (
     <SafeAreaView style={styles.container}>
