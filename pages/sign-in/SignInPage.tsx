@@ -1,17 +1,16 @@
+import { styles } from "./SignInPageStyles";
 import React, { useState, useEffect } from 'react';
 import { CommonActions } from '@react-navigation/native';
-import UserService from '@/app/api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackActions } from "@react-navigation/native";
 import axios from 'axios';
+import { useAuth } from "@/shared/auth.context";
 
 import {
   View,
   Text,
   Image,
   TouchableOpacity,
-  StyleSheet,
-  Dimensions,
   StatusBar,
   SafeAreaView,
   TextInput,
@@ -19,9 +18,9 @@ import {
   Alert,
 } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+export default function SignInPage({ navigation }: { navigation: any }, width: any) {  
+    const { login } = useAuth();
 
-export default function LoginScreen({ navigation }: { navigation: any }, width: any) {      
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -62,46 +61,14 @@ export default function LoginScreen({ navigation }: { navigation: any }, width: 
     };    
 
     // Функция обработчик отправки формы авторизации
-    const handleLogin = async () => {
-        // try {
-        //     const response = await axios.post('vroom.buhprogsoft.com.ua/login', { email, password });
-    
-        //     // Сохраняем токен в AsyncStorage
-        //     const { token } = response.data;
-        //     await AsyncStorage.setItem("token", token);
-    
-        //     // Переход на главную страницу
-        //     navigation.navigate("Main");
-    
-        // } catch (error) {
-        //     Alert.alert("Ошибка", "Неверный email или пароль");
-        // }
-        try {
-            // Получаем пользователя по email
-            const { data: users } = await axios.get(`http://vroom.buhprogsoft.com.ua/users?email=${email}`);
-    
-            if (users.length === 0) {
-                Alert.alert("Ошибка", "Пользователь не найден.");
-                return;
-            }
-    
-            const user = users[0];
-    
-            // Проверяем пароль
-            if (user.password !== password) {
-                Alert.alert("Ошибка", "Неверный пароль.");
-                return;
-            }
-    
-            // Сохраняем данные в AsyncStorage
-            await AsyncStorage.setItem("user", JSON.stringify(user));
-    
-            // Переход на главную страницу
-            navigation.navigate("Main");
-    
-        } catch (error) {
-            console.log(error);
-        }
+    const handleLogin = async () => {    
+            login();
+            setTimeout(() => {
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Main' }],
+                });
+            }, 500);
     }
   
   return (
@@ -113,7 +80,7 @@ export default function LoginScreen({ navigation }: { navigation: any }, width: 
             navigation.dispatch(
               CommonActions.reset({
                 index: 0,
-                routes: [{ name: 'Welcome' }],
+                routes: [{ name: 'WelcomePage' }],
               })
             )}>
           <Image
@@ -194,80 +161,3 @@ export default function LoginScreen({ navigation }: { navigation: any }, width: 
       
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF',
-    paddingHorizontal: width * 0.05,
-  },
-  formContainer: {    
-    flexDirection: 'column',    
-    rowGap: 20,
-    alignItems: 'center',
-  },
-  listInputs: {
-    flexDirection: 'column',    
-    rowGap: 10,
-    width: '100%',
-  },
-  arrowBack: {
-    marginTop: height * 0.02,
-    marginLeft: width * 0.02,    
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-  },
-  arrowIcon: {
-    width: width * 0.06,
-    height: width * 0.06,
-  },
-  header: {
-    fontSize: width * 0.05,
-    alignSelf: 'center',
-    marginTop: height * 0.08,
-    marginBottom: height * 0.02,
-  },
-  button: {
-    borderRadius: 10,
-    width: '100%',
-    paddingVertical: 10,
-    backgroundColor: '#0EA2DE',
-    alignItems: 'center',
-    justifyContent: 'center',    
-  },
-  buttonText: {
-    fontSize: width * 0.04,
-    color: '#FFF',
-  },
-  link: {
-    color: '#808080',
-    textDecorationLine: 'underline',
-    fontSize: 14,
-    textAlign: 'center',    
-  },
-  label: {
-    fontSize: 14,
-    marginBottom: 5,
-    color: '#808080',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#808080',
-    borderRadius: 10,
-    padding: 10,
-    fontSize: width *   0.04,
-  },
-  inputError: {
-    borderColor: 'red',
-  },
-  errorText: {
-    color: 'red',
-    fontSize: width * 0.035,
-    marginBottom: 4,    
-  },
-  labelErrorText: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-});

@@ -5,7 +5,7 @@ import {
 
 const { width, height } = Dimensions.get('window');
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#FFF',    
@@ -81,5 +81,3 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
 })
-
-export default styles;

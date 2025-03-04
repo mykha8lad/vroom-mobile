@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './stylesMain';
+import { styles } from './MainPageStyles';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -11,7 +11,7 @@ import BriefsPage from '@/pages/briefs/BriefsPage';
 import FollowedPage from '@/pages/followed/FollowedPage';
 import SearchPage from '@/pages/search/SearchPage';
 import ProfilePage from '@/pages/profile/ProfilePage';
-import ProfileStack from './Profile/ProfileNavigationStack';
+import ProfileStack from '../../app/main/Profile/ProfileNavigationStack';
 
 import NotificationsIcon from '@/assets/images/main-images/Notifications.svg';
 import AddVideoIcon from '@/assets/images/main-images/AddVideo.svg';
@@ -107,7 +107,7 @@ const TabNavigetion = () => {
     )
 }
 
-export default function MainScreen() {    
+export default function MainPage() {    
     return (
         <Stack.Navigator>
       {/* Главный экран с табами */}
