@@ -7,7 +7,7 @@ export const videos = [
         avatar: require('../../assets/images/video-images/avatars/Avatar.png'),
         views: '1.4M',
         date: '1 day',
-        time: '16:52',
+        time: '16:52',        
     },
     {
         id: "2",
@@ -27,9 +27,14 @@ export const videos = [
         avatar: require('../../assets/images/video-images/avatars/Avatar.png'),
         views: '1.4',
         date: '1',
-        time: '16:52',
+        time: '16:52',        
     },    
 ];
+
+const comment = [{
+    likes: '',
+    dislike: '',
+}]
 
 export const storyListData = [
     {

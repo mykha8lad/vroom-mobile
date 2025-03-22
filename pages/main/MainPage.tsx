@@ -29,6 +29,8 @@ import FollowedNoActiveIcon from '@/assets/images/main-images/main-navigation-ic
 
 import AvatarIcon from '@/assets/images/main-images/main-navigation-icons/Avatar.svg';
 
+import { getUserById } from '@/entities/user/api/userApi';
+
 const icons: any = {
     Recommended: { active: RecommendedActiveIcon, inactive: RecommendedNoActiveIcon },
     Briefs: { active: BriefsActiveIcon, inactive: BriefsNoActiveIcon },

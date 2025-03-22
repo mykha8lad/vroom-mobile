@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { styles } from './WelcomePageStyles';
 
 import {
@@ -12,23 +10,7 @@ import {
   Platform,
 } from 'react-native';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Google from 'expo-auth-session/providers/google'; 
-
-interface User {
-    id: number;
-    name: string;
-    email: string;    
-}
-
-const API_URL = "http://vroom.buhprogsoft.com.ua";
-
 export default function WelcomePage({ navigation }: { navigation: any }) {
-    const [userInfo, setUserInfo] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-
-  
-
     
   return (
     <SafeAreaView style={styles.container}>

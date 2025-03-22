@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import * as ImagePicker from "expo-image-picker";
+import React, { FC, useState, useEffect } from 'react';
+
 import { VideoHistory } from '@/widgets/Videos/VideoHistory/VideoHistory';
 import { MyPlaylist } from '@/widgets/Playlists/MyPlaylist/MyPlaylist';
 import { styles } from './ProfilePageStyles';
@@ -10,7 +10,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
     View,
     Text,
-    Image,
     TouchableOpacity,
     FlatList,
     ScrollView,
@@ -21,6 +20,9 @@ import HistoryIcon from '@/assets/images/main-images/profile-images/nav-images/H
 import PlaylistsIcon from '@/assets/images/main-images/profile-images/nav-images/Playlists.svg';
 import SettingsIcon from '@/assets/images/main-images/profile-images/nav-images/Settings.svg';
 import AngleIcon from '@/assets/images/main-images/profile-images/nav-images/Angle.svg';
+import UserCard from '@/entities/user/ui/UserCard';
+import { getUserById } from '@/entities/user/api/userApi';
+import { IUser } from '@/entities/user/model/types';
 
 export type RootStackParamList = {
     GeneralChannel: undefined;
@@ -53,50 +55,26 @@ const ProfileNavItem: React.FC<ProfileNavItemProps> = ({ Icon, title, screenName
     );
 };
 
-export default function ProfilePage({ navigation }: any) {
-    const [image, setImage] = useState<string | null>(null);
+export default function ProfilePage({ navigation, user }: any) {
+    const [userP, setUserP] = useState<IUser | null>(null);    
 
-    const pickImage = async () => {
-        const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!permission.granted) {
-          alert("Нужно разрешение для доступа к фото!");
-          return;
-        }
+    useEffect(() => {
+        const fetchUser = async () => {          
+            const userData = await getUserById("2");       
     
-        let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
-          aspect: [1, 1],
-          quality: 1,
-        });
-    
-        if (!result.canceled) {
-          setImage(result.assets[0].uri);
+        if (userData) {
+            setUserP(userData);
         }
     };
+        fetchUser();
+    }, []);
 
+    
     return(
         <ScrollView style={{backgroundColor: '#fff', height: '100%'}}>
-            
-                <View style={styles.headerContainer}>
+                            
+                {userP ? <UserCard user={userP} /> : <Text>Ошибка загрузки пользователя</Text>} 
 
-                    <TouchableOpacity style={styles.avatarContainer} onPress={pickImage}>
-                        {image ? (
-                            <Image source={{ uri: image }} style={styles.avatar} />
-                        ) : (
-                            <View style={styles.placeholder}>
-                                <Image source={require('../../assets/images/main-images/profile-images/Avatar.png')} style={styles.editIcon} />
-                            </View>
-                        )}
-                    </TouchableOpacity>
-
-                    <View style={styles.userInfoContainer}>
-                        <Text style={styles.userNameText}>Life Hater</Text>
-
-                        <Text style={styles.nickNameText}>@LiFeHaTeR99</Text>
-                    </View>
-
-                </View>
                 <View style={styles.profileNavContainer}>
                     
                     <ProfileNavItem Icon={UserIcon} title="Your channel" screenName='GeneralChannel'/>

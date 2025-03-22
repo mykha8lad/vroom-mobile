@@ -19,7 +19,7 @@ import {
 } from 'react-native';
 
 export default function SignUpPage({ navigation }: { navigation: any }, width: any) {
-    const [username, setUsername] = useState('');
+    const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
@@ -34,12 +34,12 @@ export default function SignUpPage({ navigation }: { navigation: any }, width: a
     const [isFormValid, setIsFormValid] = useState(false);
     
     useEffect(() => {
-        if (!usernameError && !emailError && !passwordError && !repeatPasswordError && username && email && password && repeatPassword && selectedDate) {
+        if (!usernameError && !emailError && !passwordError && !repeatPasswordError && userName && email && password && repeatPassword && selectedDate) {
             setIsFormValid(true);
         } else {
             setIsFormValid(false);
         }
-    }, [usernameError, emailError, passwordError, repeatPasswordError, username, email, password, repeatPassword, selectedDate]);
+    }, [usernameError, emailError, passwordError, repeatPasswordError, userName, email, password, repeatPassword, selectedDate]);
 
     const validateUsername = (text: string) => {        
         const usernameRegex = /^[a-zA-Z0-9._-]+$/;
@@ -52,7 +52,7 @@ export default function SignUpPage({ navigation }: { navigation: any }, width: a
             setUsernameError('');
         }
 
-        setUsername(text);
+        setUserName(text);
     };
 
     const validateEmail = (text: string) => {
@@ -112,7 +112,7 @@ export default function SignUpPage({ navigation }: { navigation: any }, width: a
         if (usernameError || emailError || passwordError || repeatPasswordError) {
             Alert.alert('Error', 'Please fix the errors before continuing.');
             return;
-        } else if (!username || !email || !password || !repeatPassword) {
+        } else if (!userName || !email || !password || !repeatPassword) {
             Alert.alert('Error', 'All fields must be filled adi.');
             return;
         }
@@ -135,23 +135,22 @@ export default function SignUpPage({ navigation }: { navigation: any }, width: a
         
         try {
             // Проверяем, есть ли уже такой email
-            const { data: existingUsers } = await axios.get(`http://vroom.buhprogsoft.com.ua/users?email=${email}`);
+            // const { data: existingUsers } = await axios.get(`http://vroom.buhprogsoft.com.ua/users?email=${email}`);
     
-            if (existingUsers.length > 0) {
-                Alert.alert("Ошибка", "Email уже зарегистрирован.");
-                return;
-            }
+            // if (existingUsers.length > 0) {
+            //     Alert.alert("Ошибка", "Email уже зарегистрирован.");
+            //     return;
+            // }
     
             // Регистрируем пользователя
-            await axios.post('http://vroom.buhprogsoft.com.ua/users', {
-                username,
-                email,
+            await axios.post('https://67d5744ad2c7857431f0730c.mockapi.io/api/v1/users', {
+                userName,
                 password,
-                selectedDate
+                email,
             });
     
             Alert.alert("Успех", "Пользователь зарегистрирован.");
-            navigation.navigate('EmailConfirmationPage');
+            navigation.navigate('EmailConfirmation');
     
         } catch (error) {
             console.log(error);
@@ -200,7 +199,7 @@ export default function SignUpPage({ navigation }: { navigation: any }, width: a
                         placeholder="@"
                         placeholderTextColor="#808080"
                         onChangeText={validateUsername}
-                        value={username}
+                        value={userName}
                     />
                 </View>
 
