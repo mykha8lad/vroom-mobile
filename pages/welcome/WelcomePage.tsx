@@ -10,6 +10,11 @@ import {
   Platform,
 } from 'react-native';
 
+import PersonImage from '@/shared/icons/welcome-page-icons/Person.svg'
+import GoogleIcon from '@/shared/icons/welcome-page-icons/Google.svg'
+import FacebookIcon from '@/shared/icons/welcome-page-icons/Facebook.svg'
+import AppleIcon from '@/shared/icons/welcome-page-icons/Apple.svg'
+
 export default function WelcomePage({ navigation }: { navigation: any }) {
     
   return (
@@ -20,10 +25,7 @@ export default function WelcomePage({ navigation }: { navigation: any }) {
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <Text style={styles.headerText}>Unleash your creativity</Text>
-          <Image
-            source={require('@/assets/images/auth-images/Person.png')}
-            style={styles.headerImage}
-          />  
+          <PersonImage />
         </View>
       </View>
 
@@ -51,21 +53,21 @@ export default function WelcomePage({ navigation }: { navigation: any }) {
           }}>
           <TouchableOpacity style={[styles.button, { borderColor: '#000', borderWidth: 1 }]}>
             <View style={styles.iconContainer}>
-              <Image style={styles.icon} source={require('@/assets/images/auth-images/Google.png')} />
+              <GoogleIcon />
             </View>
             <Text style={[styles.buttonText, { color: '#000' }]}>Continue with Google</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.button, { backgroundColor: '#1877F2' }]}>
             <View style={styles.iconContainer}>
-              <Image style={styles.icon} source={require('@/assets/images/auth-images/Facebook.png')} />
+              <FacebookIcon />
             </View>
             <Text style={styles.buttonText}>Continue with Facebook</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.button, { backgroundColor: '#000' }]}>
             <View style={styles.iconContainer}>
-              <Image style={styles.icon} source={require('@/assets/images/auth-images/Apple.png')} />
+              <AppleIcon />
             </View>
             <Text style={styles.buttonText}>Continue with Apple</Text>
           </TouchableOpacity>

@@ -1,5 +1,7 @@
 import React, { FC, useState, useEffect } from 'react';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { VideoHistory } from '@/widgets/Videos/VideoHistory/VideoHistory';
 import { MyPlaylist } from '@/widgets/Playlists/MyPlaylist/MyPlaylist';
 import { styles } from './ProfilePageStyles';
@@ -55,25 +57,36 @@ const ProfileNavItem: React.FC<ProfileNavItemProps> = ({ Icon, title, screenName
     );
 };
 
-export default function ProfilePage({ navigation, user }: any) {
-    const [userP, setUserP] = useState<IUser | null>(null);    
+export default function ProfilePage({ navigation }: any) {
+    // const [userP, setUserP] = useState<IUser | null>(null);   
+    const [user, setUser] = useState<any>(null); 
 
     useEffect(() => {
-        const fetchUser = async () => {          
-            const userData = await getUserById("2");       
-    
-        if (userData) {
-            setUserP(userData);
-        }
-    };
+        const fetchUser = async () => {
+            const userData = await AsyncStorage.getItem("user");
+            if (userData) {
+                setUser(JSON.parse(userData));
+            }
+        };
         fetchUser();
     }, []);
+
+    // useEffect(() => {
+    //     const fetchUser = async () => {          
+    //         const userData = await getUserById("1");       
+    
+    //     if (userData) {
+    //         setUserP(userData);
+    //     }
+    // };
+    //     fetchUser();
+    // }, []);
 
     
     return(
         <ScrollView style={{backgroundColor: '#fff', height: '100%'}}>
                             
-                {userP ? <UserCard user={userP} /> : <Text>Ошибка загрузки пользователя</Text>} 
+                {user ? <UserCard user={user} /> : <Text>Ошибка загрузки пользователя</Text>} 
 
                 <View style={styles.profileNavContainer}>
                     

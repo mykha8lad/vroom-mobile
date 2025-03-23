@@ -2,6 +2,16 @@ import React, { useState, useEffect } from 'react';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { CommonActions } from '@react-navigation/native';
 import { styles } from './SignUpPageStyles';
+import { validateUsername } from '@/shared/validateTools/validateUsername';
+import { validateEmail } from '@/shared/validateTools/validateEmail'; 
+import { validatePassword } from '@/shared/validateTools/validatePasswors';
+import { validateRepeatPassword } from '@/shared/validateTools/validateRepeatPassword';
+
+import { UserNameForm } from '@/shared/ui/SignUpSignInForms/UserNameForm/UserNameForm';
+import { EmailForm } from '@/shared/ui/SignUpSignInForms/EmailForm/EmailForm';
+import { PasswordForm } from '@/shared/ui/SignUpSignInForms/PasswordForm/PasswordForm';
+import { RepeatPasswordForm } from '@/shared/ui/SignUpSignInForms/RepeatPasswordForm/RepeatPasswordForm';
+import { DateOfBirthForm } from '@/shared/ui/SignUpSignInForms/DateOfBirthForm/DateOfBirthForm';
 
 import axios from 'axios';
 
@@ -15,15 +25,14 @@ import {
   TextInput,
   Platform,
   Alert,
-  Animated,
 } from 'react-native';
 
 export default function SignUpPage({ navigation }: { navigation: any }, width: any) {
     const [userName, setUserName] = useState('');
+    const [userNameError, setUserNameError] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
-    const [usernameError, setUsernameError] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [repeatPasswordError, setRepeatPasswordError] = useState('');
@@ -34,59 +43,12 @@ export default function SignUpPage({ navigation }: { navigation: any }, width: a
     const [isFormValid, setIsFormValid] = useState(false);
     
     useEffect(() => {
-        if (!usernameError && !emailError && !passwordError && !repeatPasswordError && userName && email && password && repeatPassword && selectedDate) {
+        if (!userNameError && !emailError && !passwordError && !repeatPasswordError && userName && email && password && repeatPassword && selectedDate) {
             setIsFormValid(true);
         } else {
             setIsFormValid(false);
         }
-    }, [usernameError, emailError, passwordError, repeatPasswordError, userName, email, password, repeatPassword, selectedDate]);
-
-    const validateUsername = (text: string) => {        
-        const usernameRegex = /^[a-zA-Z0-9._-]+$/;
-
-        if (text.length < 1 || text.length > 20) {
-            setUsernameError('Username must contain 1-20 characters');
-        } else if (!usernameRegex.test(text)) {
-            setUsernameError('Username contains unsupported characters');
-        } else {
-            setUsernameError('');
-        }
-
-        setUserName(text);
-    };
-
-    const validateEmail = (text: string) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(text)) {
-            setEmailError('Please enter a valid email');
-        } else {
-            setEmailError('');
-        }
-        setEmail(text);
-    };
-
-    const validatePassword = (text: string) => {
-        const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*)[A-Za-z\d_]{8,12}$/;
-        const startsWithNumberOrSpecial = /^[^A-Za-z]/;
-
-        if (startsWithNumberOrSpecial.test(text) || !passwordRegex.test(text)) {
-            setPasswordError('Please enter a valid password');        
-        } else {
-            setPasswordError('');
-        }
-
-        setPassword(text);
-    };
-
-    const validateRepeatPassword = (text: string) => {
-        if (text !== password) {
-            setRepeatPasswordError("Passwords don't match");
-        } else {
-            setRepeatPasswordError('');
-        }
-    
-        setRepeatPassword(text);
-    };
+    }, [userNameError, emailError, passwordError, repeatPasswordError, userName, email, password, repeatPassword, selectedDate]);
 
     const showDatePicker = () => {
         setDatePickerVisibility(true);
@@ -109,7 +71,7 @@ export default function SignUpPage({ navigation }: { navigation: any }, width: a
     {/* AXIOS TEST API */}
 
     const handleRegistration = async () => { 
-        if (usernameError || emailError || passwordError || repeatPasswordError) {
+        if (userNameError || emailError || passwordError || repeatPasswordError) {
             Alert.alert('Error', 'Please fix the errors before continuing.');
             return;
         } else if (!userName || !email || !password || !repeatPassword) {
@@ -117,43 +79,29 @@ export default function SignUpPage({ navigation }: { navigation: any }, width: a
             return;
         }
 
-        // try {
-        //     const response = await axios.post('http://vroom.buhprogsoft.com.ua/users', {
-        //         username,
-        //         email,
-        //         password,
-        //         dateOfBirth: selectedDate,
-        //     });
-
-        //     if (response.status === 201) {
-        //         Alert.alert('Success', 'You have been registered successfully!');
-        //         navigation.navigate('Confirmation');
-        //     }
-        // } catch (error) {
-        //     console.error(error);           
-        // }
-        
         try {
             // Проверяем, есть ли уже такой email
-            // const { data: existingUsers } = await axios.get(`http://vroom.buhprogsoft.com.ua/users?email=${email}`);
-    
-            // if (existingUsers.length > 0) {
-            //     Alert.alert("Ошибка", "Email уже зарегистрирован.");
-            //     return;
-            // }
-    
-            // Регистрируем пользователя
-            await axios.post('https://67d5744ad2c7857431f0730c.mockapi.io/api/v1/users', {
+            const { data: existingUsers } = await axios.get('https://67d5744ad2c7857431f0730c.mockapi.io/api/v1/register');
+            const emailExists = existingUsers.some((user: any) => user.email === email);
+
+            if (emailExists) {
+                Alert.alert("Error", "Email already registered.");
+            return;
+}
+
+            const response = await axios.post('https://67d5744ad2c7857431f0730c.mockapi.io/api/v1/register', {
                 userName,
-                password,
                 email,
+                password,
+                dateOfBirth: selectedDate,
             });
-    
-            Alert.alert("Успех", "Пользователь зарегистрирован.");
-            navigation.navigate('EmailConfirmation');
-    
+
+            if (response.status === 201) {
+                Alert.alert('Success', 'You have been registered successfully!');
+                navigation.navigate('EmailConfirmation');
+            }
         } catch (error) {
-            console.log(error);
+            console.error(error);           
         }
     }
 
@@ -166,7 +114,7 @@ export default function SignUpPage({ navigation }: { navigation: any }, width: a
                 navigation.dispatch(
                 CommonActions.reset({
                 index: 0,
-                routes: [{ name: 'WelcomePage' }],
+                routes: [{ name: 'Welcome' }],
                 })
             )}>
                 <Image
@@ -182,110 +130,22 @@ export default function SignUpPage({ navigation }: { navigation: any }, width: a
 
         <View>
             <View style={styles.listInputs}>
-                <View>
-                    <View style={styles.labelErrorText}>
-                        <Text style={styles.label}>Username</Text>
-                        {usernameError !== '' && (
-                            <Text style={styles.errorText}>
-                                {usernameError}
-                            </Text>
-                        )}
-                    </View>
-                    <TextInput
-                        style={[
-                        styles.input,
-                        usernameError !== '' && styles.inputError,
-                        ]}
-                        placeholder="@"
-                        placeholderTextColor="#808080"
-                        onChangeText={validateUsername}
-                        value={userName}
-                    />
-                </View>
 
-                <View>
-                    <View style={styles.labelErrorText}>
-                        <Text style={styles.label}>Email</Text>
-                        {emailError !== '' && (
-                            <Text style={styles.errorText}>
-                                {emailError}
-                            </Text>
-                        )}
-                    </View>
-                    <TextInput
-                        style={[
-                        styles.input,
-                        emailError !== '' && styles.inputError,
-                    ]}
-                        placeholder="example@example.com"
-                        placeholderTextColor="#808080"
-                        onChangeText={validateEmail}
-                        value={email}
-                    />
-                </View>
+                <UserNameForm userName={userName} userNameError={userNameError} 
+                onChangeText={(text) => validateUsername(text, setUserNameError, setUserName)}/>
 
-                <View>
-                    <View style={styles.labelErrorText}>
-                        <Text style={styles.label}>Password</Text>
-                        {passwordError !== '' && (
-                        <Text style={styles.errorText}>
-                            {passwordError}
-                        </Text>                    
-                        )}
-                    </View>
-                    <TextInput
-                        style={[
-                        styles.input,
-                        passwordError !== '' && styles.inputError,
-                    ]}        
-                        placeholderTextColor="#808080"
-                        secureTextEntry
-                        onChangeText={validatePassword}
-                        value={password}
-                    />
-                </View>
+                <EmailForm email={email} emailError={emailError}
+                onChangeText={(text) => validateEmail(text, setEmailError, setEmail)} />
 
-                <View>
-                    <View style={styles.labelErrorText}>
-                        <Text style={styles.label}>Repeat password</Text>
-                            {repeatPasswordError !== '' && (
-                        <Text style={styles.errorText}>
-                            {repeatPasswordError}
-                        </Text>
-                        )}
-                    </View>
-                    <TextInput
-                        style={[
-                        styles.input,
-                        repeatPasswordError !== '' && styles.inputError,
-                    ]}          
-                        placeholderTextColor="#808080"
-                        secureTextEntry
-                        onChangeText={(text) => validateRepeatPassword(text)}
-                        value={repeatPassword}
-                    />
-                </View>
+                <PasswordForm password={password} passwordError={passwordError}
+                onChangeText={(text) => validatePassword(text, setPasswordError, setPassword)} />
 
-                <View>
-                    <Text style={styles.label}>Date of Birth</Text>
-                   
-                    {/* Кнопка для выбора даты */}
-                    <TouchableOpacity style={[styles.input, { width: width * 0.8 }]} onPress={showDatePicker}>
-                        <Text style={{ color: selectedDate ? '#000' : '#808080' }}>
-                            {selectedDate || 'Select Date'}
-                        </Text>
-                    </TouchableOpacity>
+                <RepeatPasswordForm repeatPassword={repeatPassword} repeatPasswordError={repeatPasswordError}
+                onChangeText={(text) => validateRepeatPassword(text, password, setRepeatPasswordError, setRepeatPassword)} />
 
-                    {/* Модальное окно выбора даты */}
-                    <DateTimePickerModal
-                        isVisible={isDatePickerVisible}
-                        mode="date"
-                        onConfirm={handleConfirm}
-                        onCancel={hideDatePicker}
-                        maximumDate={new Date()}
-                        minimumDate={new Date(1900, 0, 1)}
-                    />
-                </View>
+                <DateOfBirthForm selectedDate={selectedDate} isVisible={isDatePickerVisible} onPress={showDatePicker} 
+                onConfirm={handleConfirm} onCancel={hideDatePicker} />
+                
             </View>
         </View>
         

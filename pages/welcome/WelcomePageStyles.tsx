@@ -33,12 +33,12 @@ export const styles = StyleSheet.create({
   body: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: height * 0.04,
-    paddingHorizontal: width * 0.05,
+    paddingTop: 20,
+    paddingHorizontal: 16,
   },
   bodyContent: {
     width: '100%',
-    rowGap: height * 0.03,
+    rowGap: 20,
   },
   sectionTitle: {
     fontSize: width * 0.05,
@@ -70,7 +70,7 @@ export const styles = StyleSheet.create({
   link: {
     color: '#0EA2DE',
     textDecorationLine: 'underline',
-    fontSize: width * 0.035,
+    fontSize: 14,
     textAlign: 'center',    
   },
   lineContainer: {

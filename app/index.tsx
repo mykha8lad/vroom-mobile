@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import React, { useState, useEffect, useContext } from 'react';
 import AuthNavigator from './auth.routes';
 import AppNavigator from './app.routes';
-import WelcomePage from '@/pages/welcome/WelcomePage';
-
-const Stack = createStackNavigator();
+import { AuthContext } from './AuthContext';
 
 const RootNavigator = () => {    
-    // const [isAuthenticated, setIsAuthenticated] = useState(true);
+    const authContext = useContext(AuthContext);
 
-    // return isAuthenticated ? <AppNavigator /> : <AuthNavigator />;
-    
-    return <AppNavigator />
+    if (!authContext) return null; // Проверяем, что контекст загружен
+
+    const { isAuthenticated } = authContext;
+
+    return isAuthenticated ? <AppNavigator /> : <AuthNavigator />;
+
+    // return <AppNavigator />
 };
 
 export default RootNavigator;

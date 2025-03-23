@@ -1,9 +1,17 @@
 import { styles } from "./SignInPageStyles";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from "@/app/AuthContext";
+import jwtDecode from 'jwt-decode';
 import { StackActions } from "@react-navigation/native";
 import axios from 'axios';
+
+import { validateEmail } from "@/shared/validateTools/validateEmail";
+import { validatePassword } from "@/shared/validateTools/validatePasswors";
+
+import { EmailForm } from "@/shared/ui/SignUpSignInForms/EmailForm/EmailForm";
+import { PasswordForm } from "@/shared/ui/SignUpSignInForms/PasswordForm/PasswordForm";
 
 import {
   View,
@@ -17,9 +25,26 @@ import {
   Alert,
 } from 'react-native';
 
+// Функция для генерации фейкового JWT
+const generateMockJWT = (user: any) => {
+    const payload = {
+        id: user.id,
+        email: user.email,
+        userName: user.userName,
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // Токен истекает через 24 часа
+    };
+
+    return `mock.${btoa(JSON.stringify(payload))}.token`; // Простая эмуляция JWT
+};
+
 export default function SignInPage({ navigation }: { navigation: any }, width: any) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const authContext = useContext(AuthContext);
+
+    if (!authContext) return null; // Проверяем, что контекст загружен
+
+    const { setIsAuthenticated } = authContext;
 
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
@@ -33,33 +58,38 @@ export default function SignInPage({ navigation }: { navigation: any }, width: a
                 setIsFormValid(false);
             }
     }, [emailError, passwordError, email, password]);
+    
 
-    const validateEmail = (text: string) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(text)) {
-            setEmailError('Please enter a valid email');
-        } else {
-            setEmailError('');
+    const handleLogin = async (email: string, password: string) => {
+        try {
+            // Делаем запрос к MockAPI (тут должен быть `GET /users`, но MockAPI не поддерживает `login`)
+            const response = await axios.get(`https://67d5744ad2c7857431f0730c.mockapi.io/api/v1/register`);
+            
+            // Ищем пользователя по email
+            const user = response.data.find((user: any) => user.email === email);
+            
+            if (!user) {
+                throw new Error('Пользователь не найден');
+            }
+            
+            // Проверяем пароль (только в мок-сервере, в реальном API хешируется)
+            if (user.password !== password) {
+                throw new Error('Неверный пароль');
+            }
+            
+            // Генерируем моковый JWT
+            const mockToken = `mock.${btoa(JSON.stringify({ id: user.id, email: user.email }))}.token`;
+
+            // Сохраняем токен и данные пользователя в AsyncStorage
+            await AsyncStorage.setItem("token", mockToken);
+            await AsyncStorage.setItem("user", JSON.stringify(user));
+
+            setIsAuthenticated(true); // Обновляем глобальное состояние
+    
+            Alert.alert('Успешный вход!', `Добро пожаловать, ${user.userName}!`);
+        } catch (error: any) {
+            Alert.alert('Ошибка входа', error.message || 'Неверный email или пароль');
         }
-        setEmail(text);
-    };
-
-    const validatePassword = (text: string) => {
-        const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*)[A-Za-z\d_]{8,12}$/;
-        const startsWithNumberOrSpecial = /^[^A-Za-z]/;
-
-        if (startsWithNumberOrSpecial.test(text) || !passwordRegex.test(text)) {
-            setPasswordError('Please enter a valid password');        
-        } else {
-            setPasswordError('');
-        }
-
-        setPassword(text);
-    };    
-
-    // Функция обработчик отправки формы авторизации
-    const handleLogin = async () => {
-        Alert.alert('succes!');
     };
   
   return (
@@ -71,7 +101,7 @@ export default function SignInPage({ navigation }: { navigation: any }, width: a
             navigation.dispatch(
               CommonActions.reset({
                 index: 0,
-                routes: [{ name: 'WelcomePage' }],
+                routes: [{ name: 'Welcome' }],
               })
             )}>
           <Image
@@ -89,52 +119,17 @@ export default function SignInPage({ navigation }: { navigation: any }, width: a
 
             <View style={styles.formContainer}> 
                 <View style={styles.listInputs}>
-                    <View>
-                        <View style={styles.labelErrorText}>
-                            <Text style={styles.label}>Email</Text>
-                            {emailError !== '' && (
-                                <Text style={styles.errorText}>
-                                    {emailError}
-                                </Text>
-                            )}
-                        </View>
-                        <TextInput
-                            style={[
-                                styles.input,
-                                emailError !== '' && styles.inputError,
-                            ]} 
-                            placeholder="example@example.com"           
-                            placeholderTextColor='#808080'
-                            onChangeText={validateEmail}
-                        value={email}
-                        />
-                    </View>
+                    
+                    <EmailForm email={email} emailError={emailError} 
+                    onChangeText={(text) => validateEmail(text, setEmailError, setEmail)} />
 
-                    <View>
-                        <View style={styles.labelErrorText}>
-                            <Text style={styles.label}>Password</Text>
-                            {passwordError !== '' && (
-                            <Text style={styles.errorText}>
-                                {passwordError}
-                            </Text>                    
-                            )}
-                        </View>
-                        <TextInput
-                            style={[
-                                styles.input,
-                                passwordError !== '' && styles.inputError,
-                            ]}        
-                                placeholderTextColor="#808080"
-                                secureTextEntry
-                                onChangeText={validatePassword}
-                                value={password}
-                        />
-                    </View>
+                    <PasswordForm password={password} passwordError={passwordError} 
+                    onChangeText={(text) => validatePassword(text, setPasswordError, setPassword)} />
 
                     <TouchableOpacity
                     disabled={!isFormValid}
                     style={[styles.button, { backgroundColor: isFormValid ? '#0EA2DE' : '#E6E6E6' }]}
-                    onPress={handleLogin}>
+                    onPress={() => handleLogin(email, password)}>
                         <Text style={[styles.buttonText, { color: isFormValid ? '#FFF' : '#808080' }]}>
                             Continue
                         </Text>

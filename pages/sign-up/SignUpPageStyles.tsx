@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
-    paddingHorizontal: width * 0.05, 
+    paddingHorizontal: 16, 
   },
   datePickerButton: {
     backgroundColor: '#f9f9f9',
