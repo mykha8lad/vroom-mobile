@@ -61,12 +61,6 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 10,
         borderRadius: 5,
     },
-    item2: {
-        backgroundColor: '#E6E6E6',  
-        marginRight: 5,
-        paddingVertical: 185,        
-        borderRadius: 5,
-    },
     itemTitle: {
         color: '#000',
     },

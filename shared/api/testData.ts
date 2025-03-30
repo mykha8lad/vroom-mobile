@@ -36,11 +36,13 @@ const comment = [{
     dislike: '',
 }]
 
-export const storyListData = [
-    {
-        id: '0',
-        title: '',
-    },
+interface Item {
+    id: string;
+    title?: string;
+    icon?: boolean;
+}
+
+export const storyListData: Item[] = [
     {
         id: '1',
         title: 'All',
@@ -168,11 +170,7 @@ export const followedList = [
     },
 ];
 
-export const searchListData = [
-    {
-        id: '0',
-        title: '',
-    },
+export const searchListData: Item[] = [
     {
         id: '1',
         title: 'All',

@@ -2,8 +2,7 @@ import { styles } from './WelcomePageStyles';
 
 import {
   View,
-  Text,
-  Image,
+  Text,  
   TouchableOpacity, 
   StatusBar,
   SafeAreaView,

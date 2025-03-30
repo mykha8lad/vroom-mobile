@@ -2,10 +2,11 @@ import { styles } from "./SignInPageStyles";
 import React, { useState, useEffect, useContext } from 'react';
 import { CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AuthContext } from "@/app/AuthContext";
 import jwtDecode from 'jwt-decode';
 import { StackActions } from "@react-navigation/native";
 import axios from 'axios';
+
+import { useAuthStore } from "@/shared/store/authStore";
 
 import { validateEmail } from "@/shared/validateTools/validateEmail";
 import { validatePassword } from "@/shared/validateTools/validatePasswors";
@@ -37,19 +38,16 @@ const generateMockJWT = (user: any) => {
     return `mock.${btoa(JSON.stringify(payload))}.token`; // Простая эмуляция JWT
 };
 
-export default function SignInPage({ navigation }: { navigation: any }, width: any) {
+export default function SignInPage({ navigation }: { navigation: any }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const authContext = useContext(AuthContext);
-
-    if (!authContext) return null; // Проверяем, что контекст загружен
-
-    const { setIsAuthenticated } = authContext;
 
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
 
     const [isFormValid, setIsFormValid] = useState(false);
+
+    const login = useAuthStore((state) => state.login);
 
     useEffect(() => {
             if (!emailError && !passwordError && email && password) {
@@ -58,7 +56,6 @@ export default function SignInPage({ navigation }: { navigation: any }, width: a
                 setIsFormValid(false);
             }
     }, [emailError, passwordError, email, password]);
-    
 
     const handleLogin = async (email: string, password: string) => {
         try {
@@ -83,10 +80,9 @@ export default function SignInPage({ navigation }: { navigation: any }, width: a
             // Сохраняем токен и данные пользователя в AsyncStorage
             await AsyncStorage.setItem("token", mockToken);
             await AsyncStorage.setItem("user", JSON.stringify(user));
-
-            setIsAuthenticated(true); // Обновляем глобальное состояние
     
-            Alert.alert('Успешный вход!', `Добро пожаловать, ${user.userName}!`);
+            // Alert.alert('Успешный вход!', `Добро пожаловать, ${user.userName}!`);
+            login()
         } catch (error: any) {
             Alert.alert('Ошибка входа', error.message || 'Неверный email или пароль');
         }

@@ -11,13 +11,14 @@ import {
   SafeAreaView,
   TextInput,
   Platform,
+  Alert,
 } from 'react-native';
 
 export default function EmailConfirmationPage({ navigation }: { navigation: any }) {  
   const [code, setCode] = useState(['', '', '', '', '', '']);
+  const [isFormValid, setIsFormValid] = useState(false);
   const inputs = Array.from({ length: 6 }, () => useRef<TextInput>(null));
 
-    const [isFormValid, setIsFormValid] = useState(false);
 
     useEffect(() => {
         const isCodeComplete = code.every((digit) => digit !== '');
@@ -44,11 +45,26 @@ export default function EmailConfirmationPage({ navigation }: { navigation: any 
   const isCodeComplete = code.every((digit) => digit !== '');
 
   // Добавить логику проверки токена верификации, после чего пользователь может войти на главную страницу
-  const handleSubmit = () => {
-    if (isFormValid) {
-        navigation.dispatch(StackActions.replace("LogIn"));
-    }   
-  };
+  const handleSubmit = async () => {
+    if (!isFormValid && !isCodeComplete) {
+        Alert.alert('Ошибка', 'Введите полный код.');
+        return;
+    }
+
+    const verificationCode = code.join(''); // Объединяем массив в строку
+
+    try {
+        // Отправляем код на сервер для проверки
+        if(verificationCode === '123456')  {
+            Alert.alert('Код подтвержден', 'Теперь вы можете войти в аккаунт.')
+            navigation.navigate('SignIn')
+        } else {
+            
+        }    
+    } catch (error: any) {
+        Alert.alert('Ошибка', 'Неверный код.');
+    }
+};
 
   return (
     <SafeAreaView style={styles.container}>

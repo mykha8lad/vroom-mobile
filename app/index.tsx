@@ -1,18 +1,23 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { View, ActivityIndicator } from "react-native";
 import AuthNavigator from './auth.routes';
+import { useAuthStore } from '@/shared/store/authStore';
 import AppNavigator from './app.routes';
-import { AuthContext } from './AuthContext';
 
 const RootNavigator = () => {    
-    const authContext = useContext(AuthContext);
+    // const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-    if (!authContext) return null; // Проверяем, что контекст загружен
+    // if (isAuthenticated === undefined) {
+    //     return (
+    //       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    //         <ActivityIndicator size="large" />
+    //       </View>
+    //     );
+    // }
 
-    const { isAuthenticated } = authContext;
+    // return isAuthenticated ? <AppNavigator /> : <AuthNavigator />;
 
-    return isAuthenticated ? <AppNavigator /> : <AuthNavigator />;
-
-    // return <AppNavigator />
+    return <AppNavigator />
 };
 
 export default RootNavigator;
