@@ -1,10 +1,10 @@
 import { styles } from "./SignInPageStyles";
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import jwtDecode from 'jwt-decode';
-import { StackActions } from "@react-navigation/native";
+
 import axios from 'axios';
+import { useUserStore } from '@/shared/store/useStore';
 
 import { useAuthStore } from "@/shared/store/authStore";
 
@@ -20,23 +20,10 @@ import {
   Image,
   TouchableOpacity,
   StatusBar,
-  SafeAreaView,
-  TextInput,
+  SafeAreaView,  
   Platform,
   Alert,
 } from 'react-native';
-
-// Функция для генерации фейкового JWT
-const generateMockJWT = (user: any) => {
-    const payload = {
-        id: user.id,
-        email: user.email,
-        userName: user.userName,
-        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // Токен истекает через 24 часа
-    };
-
-    return `mock.${btoa(JSON.stringify(payload))}.token`; // Простая эмуляция JWT
-};
 
 export default function SignInPage({ navigation }: { navigation: any }) {
     const [email, setEmail] = useState('');
@@ -57,36 +44,71 @@ export default function SignInPage({ navigation }: { navigation: any }) {
             }
     }, [emailError, passwordError, email, password]);
 
-    const handleLogin = async (email: string, password: string) => {
+    const parseJwt = (token: string) => {
         try {
-            // Делаем запрос к MockAPI (тут должен быть `GET /users`, но MockAPI не поддерживает `login`)
-            const response = await axios.get(`https://67d5744ad2c7857431f0730c.mockapi.io/api/v1/register`);
-            
-            // Ищем пользователя по email
-            const user = response.data.find((user: any) => user.email === email);
-            
-            if (!user) {
-                throw new Error('Пользователь не найден');
-            }
-            
-            // Проверяем пароль (только в мок-сервере, в реальном API хешируется)
-            if (user.password !== password) {
-                throw new Error('Неверный пароль');
-            }
-            
-            // Генерируем моковый JWT
-            const mockToken = `mock.${btoa(JSON.stringify({ id: user.id, email: user.email }))}.token`;
-
-            // Сохраняем токен и данные пользователя в AsyncStorage
-            await AsyncStorage.setItem("token", mockToken);
-            await AsyncStorage.setItem("user", JSON.stringify(user));
-    
-            // Alert.alert('Успешный вход!', `Добро пожаловать, ${user.userName}!`);
-            login()
-        } catch (error: any) {
-            Alert.alert('Ошибка входа', error.message || 'Неверный email или пароль');
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(
+                atob(base64)
+                .split('')
+                .map(c => `%${('00' + c.charCodeAt(0).toString(16)).slice(-2)}`)
+                .join('')
+            );
+            return JSON.parse(jsonPayload);
+        } catch (e) {
+            console.error('Ошибка при декодировании токена:', e);
+            return {};
         }
     };
+
+    const handleLogin = async (email: string, password: string) => {
+        try {
+            const { setUser, setToken } = useUserStore.getState();
+        
+            const response = await axios.post('https://back.buhprogsoft.com.ua/api/Auth/login', {
+                email,
+                password,
+            });            
+            
+            const { token, email: userEmail, userName, id } = response.data;
+        
+            if (!token) {
+                throw new Error('Токен не получен');
+            }
+        
+            const decoded: any = parseJwt(token);
+            console.log('Расшифрованный токен:', decoded);
+        
+            const user = {
+                id: decoded.sub || id || '',
+                userName: decoded.username || userName || '',
+                email: decoded.email || userEmail || email,
+                avatar: decoded.avatar || '',
+                displayName: decoded.displayname || '',
+            };
+        
+            setUser(user);
+            setToken(token);
+        
+            await AsyncStorage.setItem('user', JSON.stringify(user));
+            await AsyncStorage.setItem('token', token);
+        
+            login();
+        } catch (error: any) {
+            if (error.response) {
+                Alert.alert('Ошибка входа', error.response.data.message || 'Неверный email или пароль');
+                console.log(error.response.data.message);
+            } else {
+                Alert.alert('Ошибка входа', error.message || 'Что-то пошло не так');
+                console.log(error.message);
+            }
+        }
+    };
+      
+    
+
+    
+    
   
   return (
     <SafeAreaView style={styles.container}>

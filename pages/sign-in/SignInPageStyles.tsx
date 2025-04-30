@@ -15,6 +15,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'column',    
     rowGap: 20,
     alignItems: 'center',
+    paddingHorizontal: 16,
   },
   listInputs: {
     flexDirection: 'column',    
@@ -23,7 +24,7 @@ export const styles = StyleSheet.create({
   },
   arrowBack: {
     marginTop: height * 0.02,
-    marginLeft: width * 0.02,    
+    marginLeft: 16,
     width: 40,
     height: 40,
     justifyContent: 'center',

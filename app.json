@@ -10,20 +10,20 @@
     "newArchEnabled": true,
     "jsEngine": "hermes",
     "packagerOpts": {
-        "config": "metro.config.js",
-        "sourceExts": [
-            "expo.ts",
-            "expo.tsx",
-            "expo.js",
-            "expo.jsx",
-            "ts",
-            "tsx",
-            "js",
-            "jsx",
-            "json",
-            "wasm",
-            "svg"
-        ]
+      "config": "metro.config.js",
+      "sourceExts": [
+        "expo.ts",
+        "expo.tsx",
+        "expo.js",
+        "expo.jsx",
+        "ts",
+        "tsx",
+        "js",
+        "jsx",
+        "json",
+        "wasm",
+        "svg"
+      ]
     },
     "ios": {
       "supportsTablet": true,
@@ -51,7 +51,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true

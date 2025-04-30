@@ -66,44 +66,43 @@ export default function SignUpPage({ navigation }: { navigation: any }, width: a
         });
         setSelectedDate(formattedDate);
         hideDatePicker();
-    };    
+    };
 
-    {/* AXIOS TEST API */}
-
-    const handleRegistration = async () => { 
+    const handleRegistration = async () => {        
         if (userNameError || emailError || passwordError || repeatPasswordError) {
             Alert.alert('Error', 'Please fix the errors before continuing.');
             return;
         } else if (!userName || !email || !password || !repeatPassword) {
-            Alert.alert('Error', 'All fields must be filled adi.');
+            Alert.alert('Error', 'All fields must be filled.');
             return;
         }
-
-        try {
-            // Проверяем, есть ли уже такой email
-            const { data: existingUsers } = await axios.get('https://67d5744ad2c7857431f0730c.mockapi.io/api/v1/register');
-            const emailExists = existingUsers.some((user: any) => user.email === email);
-
-            if (emailExists) {
-                Alert.alert("Error", "Email already registered.");
-            return;
-}
-
-            const response = await axios.post('https://67d5744ad2c7857431f0730c.mockapi.io/api/v1/register', {
+    
+        try {            
+            const response = await axios.post('https://back.buhprogsoft.com.ua/api/Users/register', {
                 userName,
                 email,
                 password,
                 dateOfBirth: selectedDate,
             });
-
-            if (response.status === 201) {
+            console.log(response.status);
+                        
+            if (response.status === 200) {
                 Alert.alert('Success', 'You have been registered successfully!');
                 navigation.navigate('EmailConfirmation');
             }
-        } catch (error) {
-            console.error(error);           
+        } catch (error: any) {
+            if (error.response) {                
+                if (error.response.status === 409) {
+                    Alert.alert('Conflict', 'The email you entered is already registered. Please use a different one.');
+                } else {                    
+                    Alert.alert('Registration Error', error.response.data.message || 'An error occurred during registration.');
+                }
+            } else {                
+                Alert.alert('Error', error.message || 'An unknown error occurred.');
+            }
         }
-    }
+    };
+    
 
   return (
     <SafeAreaView style={styles.container}>
@@ -129,7 +128,7 @@ export default function SignUpPage({ navigation }: { navigation: any }, width: a
         </View>
 
         <View>
-            <View style={styles.listInputs}>
+            <View style={styles.listInputs}>                
 
                 <UserNameForm userName={userName} userNameError={userNameError} 
                 onChangeText={(text) => validateUsername(text, setUserNameError, setUserName)}/>

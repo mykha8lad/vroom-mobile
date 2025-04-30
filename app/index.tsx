@@ -5,17 +5,17 @@ import { useAuthStore } from '@/shared/store/authStore';
 import AppNavigator from './app.routes';
 
 const RootNavigator = () => {    
-    // const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-    // if (isAuthenticated === undefined) {
-    //     return (
-    //       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    //         <ActivityIndicator size="large" />
-    //       </View>
-    //     );
-    // }
+    if (isAuthenticated === undefined) {
+        return (
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <ActivityIndicator size="large" />
+          </View>
+        );
+    }
 
-    // return isAuthenticated ? <AppNavigator /> : <AuthNavigator />;
+    return isAuthenticated ? <AppNavigator /> : <AuthNavigator />;
 
     return <AppNavigator />
 };

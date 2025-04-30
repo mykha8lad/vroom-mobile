@@ -9,7 +9,7 @@ const { width, height } = Dimensions.get('window');
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: '#fff',
     paddingHorizontal: 16, 
   },
   datePickerButton: {
@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
   },
   arrowBack: {
     marginTop: height * 0.02,
-    marginLeft: width * 0.02,    
+    marginLeft: 16,    
     width: 40,
     height: 40,    
     justifyContent: 'center',
@@ -73,12 +73,12 @@ export const styles = StyleSheet.create({
     columnGap: width * 0.02,
   },
   button: {
-    borderRadius: 10,
-    width: '100%',
+    borderRadius: 10,    
     height: 39,    
     alignItems: 'center',
-    justifyContent: 'center',    
-    marginVertical: height * 0.02,
+    justifyContent: 'center',  
+    marginVertical: height * 0.02,   
+    marginHorizontal: 16, 
   },
   buttonText: {
     fontSize: width * 0.045,
@@ -87,6 +87,7 @@ export const styles = StyleSheet.create({
   listInputs: {
     flexDirection: 'column',
     rowGap: height * 0.015,
+    paddingHorizontal: 16,
   },
   bottomText: {
     fontSize: width * 0.035,
